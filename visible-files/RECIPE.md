@@ -20,7 +20,7 @@ A popup listing the files named on the focused terminal, so a path an agent or a
 
 - One mod, `mods/visible-files/`: `main.js`, `list.js`, `mod.json` and `visible-paths.py`. `mod.json` has `place: "none"` and the popup overlay, so nothing changes in your layout.
 - `visible-paths.py` runs `hc read <terminal> --lines 200` and finds the paths.
-- `keys.json` binds `ctrl-b ctrl-o`. Change it if you use that key.
+- `keys.json` binds `ctrl-b ctrl-o`. Change it if you use that key. It also binds `ctrl-j`/`ctrl-k` to move through the list while the popup has the keyboard.
 
 The mod runs programs (`hc`, `git`, `python3`, `nvim`, your `$EDITOR`) and reads terminal text.
 

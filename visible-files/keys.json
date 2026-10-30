@@ -1,4 +1,5 @@
 {
   "global": { "ctrl-b ctrl-o": "mod.open:visible-files" },
-  "terminal": { "ctrl-b ctrl-o": "mod.open:visible-files" }
+  "terminal": { "ctrl-b ctrl-o": "mod.open:visible-files" },
+  "mod:visible-files": { "ctrl-j": "visible-files.next", "ctrl-k": "visible-files.prev" }
 }

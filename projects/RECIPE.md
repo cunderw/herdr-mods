@@ -24,7 +24,7 @@ A popup listing your git repos. Pick one to jump to its space, or to open a new 
 - Without that file, the root is `Dev`. Each root is searched two levels down. The file is read each time the popup opens.
 - `LAYOUT_SCRIPT` at the top of `main.js` sets the layout script.
 - The layout script gets `<pane> <terminal> <tab> <space> <folder>`.
-- `keys.json` binds `ctrl-b o`. Change it if you use that key.
+- `keys.json` binds `ctrl-b o`. Change it if you use that key. It also binds `ctrl-j`/`ctrl-k` to move through the list while the popup has the keyboard.
 
 The mod runs programs (`python3`, `herdr-app`, `jq`, and your layout script if you have one) and reads `projects.json` and folder names under its roots.
 

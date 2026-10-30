@@ -1,4 +1,5 @@
 {
   "global": { "ctrl-b o": "mod.open:projects" },
-  "terminal": { "ctrl-b o": "mod.open:projects" }
+  "terminal": { "ctrl-b o": "mod.open:projects" },
+  "mod:projects": { "ctrl-j": "projects.next", "ctrl-k": "projects.prev" }
 }

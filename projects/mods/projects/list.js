@@ -4,7 +4,7 @@
 // Rows are { title, detail?, mark?, markColor? }.
 import { View, div } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { closeOverlay, props, theme } from "herdr";
+import { closeOverlay, nextCommand, props, theme } from "herdr";
 
 const WINDOW = 12; // rows on screen; the list is a slice around the selection
 const ROW = 34;
@@ -25,6 +25,16 @@ export class QuickList extends View {
       try { this.items = await this.source.load(); }
       catch (e) { this.error = String(e?.message ?? e); }
       cx.notify();
+    });
+    // Ctrl+J/K come through keys.json: the layout's own bindings fire before key() sees them.
+    cx.spawn(async (cx) => {
+      for (;;) {
+        const c = await nextCommand();
+        if (c === "next") this.move(1);
+        else if (c === "prev") this.move(-1);
+        else continue;
+        cx.notify();
+      }
     });
   }
 
@@ -51,11 +61,15 @@ export class QuickList extends View {
     this.source.choose(item);
   }
 
-  key(e, cx) {
+  move(step) {
     const count = this.shown().length;
+    if (count) this.at = (this.at + step + count) % count;
+  }
+
+  key(e, cx) {
     if (e.key === "escape") return this.close();
-    if (e.key === "down" && count) this.at = (this.at + 1) % count;
-    else if (e.key === "up" && count) this.at = (this.at + count - 1) % count;
+    if (e.key === "down") this.move(1);
+    else if (e.key === "up") this.move(-1);
     else if (e.key === "r" && e.modifiers.control && this.source.review) { this.close(); return this.source.review(); }
     else return;
     cx.stop_propagation();
