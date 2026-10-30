@@ -1,18 +1,33 @@
-// Git repos under ROOTS; Enter goes to the repo's space or opens a new one.
-import { appHome, exec, home, notify, run, spaces } from "herdr";
+// Git repos under the roots in projects.json; Enter goes to the repo's space or opens a new one.
+import { appHome, exec, home, notify, readTextFile, run, spaces } from "herdr";
 import { QuickList } from "./list.js";
 
-// Folders holding repos, relative to home. Each is searched two levels down.
-const ROOTS = ["Dev"];
+// Used without a projects.json. Folders holding repos, relative to home; each is searched two levels down.
+const DEFAULT_ROOTS = ["Dev"];
 // Runs in each new space with <pane> <terminal> <tab> <space> <folder>; skipped if it's missing.
 const LAYOUT_SCRIPT = "scripts/dev-layout.sh";
 
+async function roots() {
+  const file = `${appHome()}/projects.json`;
+  const text = await readTextFile(file);
+  if (text === null) return DEFAULT_ROOTS;
+  let list;
+  try {
+    list = JSON.parse(text)?.roots;
+  } catch (e) {
+    throw new Error(`${file}: ${e.message}`);
+  }
+  if (!Array.isArray(list) || !list.every((root) => typeof root === "string")) throw new Error(`${file}: roots must be an array of strings`);
+  return list;
+}
+
 async function load() {
-  const r = await exec(`${appHome()}/mods/projects/projects.py`, ROOTS);
+  const r = await exec(`${appHome()}/mods/projects/projects.py`, await roots());
   if (r.code !== 0) throw new Error(r.stderr.trim());
   // A space may have started elsewhere, so its name counts as much as its folder.
   const open = new Map(spaces().flatMap((s) => [[s.folder, s], [s.name, s]]));
-  return JSON.parse(r.stdout)
+  // Nested roots find the same repo twice.
+  return [...new Set(JSON.parse(r.stdout))]
     .map((path) => {
       const title = path.split("/").pop(), space = open.get(path) ?? open.get(title);
       return { title, detail: path.replace(`${home()}/`, ""), path, space, mark: space ? "●" : null, markColor: "done" };

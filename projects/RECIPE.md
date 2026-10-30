@@ -20,16 +20,19 @@ A popup listing your git repos. Pick one to jump to its space, or to open a new 
 ## Built from
 
 - One mod, `mods/projects/`: `main.js`, `list.js`, `mod.json`, `projects.py` and `open-project.sh`. `mod.json` has `place: "none"` and the popup overlay, so nothing changes in your layout.
-- `ROOTS` and `LAYOUT_SCRIPT` at the top of `main.js` are the customization points. `ROOTS` defaults to `~/Dev`, searched two levels down.
+- Roots come from `projects.json` in your Herdr home, normally `~/.config/herdr-app/projects.json`. It looks like `{"roots": ["Dev", "Dev/work"]}`, with folders relative to your home.
+- Without that file, the root is `Dev`. Each root is searched two levels down. The file is read each time the popup opens.
+- `LAYOUT_SCRIPT` at the top of `main.js` sets the layout script.
 - The layout script gets `<pane> <terminal> <tab> <space> <folder>`.
 - `keys.json` binds `ctrl-b o`. Change it if you use that key.
 
-The mod runs programs (`python3`, `herdr-app`, `jq`, and your layout script if you have one) and reads folder names under `ROOTS`.
+The mod runs programs (`python3`, `herdr-app`, `jq`, and your layout script if you have one) and reads `projects.json` and folder names under its roots.
 
 ## Watch out
 
 - `_ARCHIVE`, `node_modules`, `target` and `vendor` are skipped, in `projects.py`.
-- Repos deeper than two levels aren't found.
+- Repos deeper than two levels under a root aren't found. Add a deeper root for them.
+- A broken `projects.json` shows its error in the popup.
 - `jq` and `python3` must be on your PATH.
 
 ## Done when
