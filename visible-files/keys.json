@@ -1,0 +1,4 @@
+{
+  "global": { "ctrl-b ctrl-o": "mod.open:visible-files" },
+  "terminal": { "ctrl-b ctrl-o": "mod.open:visible-files" }
+}

@@ -1,0 +1,4 @@
+{
+  "global": { "ctrl-b o": "mod.open:projects" },
+  "terminal": { "ctrl-b o": "mod.open:projects" }
+}
