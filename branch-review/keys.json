@@ -1,0 +1,4 @@
+{
+  "global": { "ctrl-b shift-v": "mod.open:branch-review-open" },
+  "terminal": { "ctrl-b shift-v": "mod.open:branch-review-open" }
+}
