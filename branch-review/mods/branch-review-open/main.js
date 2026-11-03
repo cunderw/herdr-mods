@@ -9,8 +9,10 @@ export default class BranchReviewOpen extends View {
     const pane = f?.pane ? panes().find((p) => p.pane === f.pane) : null;
     const folder = pane?.cwd || f?.cwd || space?.folder;
     cx.spawn(async () => {
-      run("pane.split", { direction: "right", ...(f?.pane ? { pane: f.pane } : {}), mod: "branch-review", props: { folder, on: space?.machine ?? null } });
+      // Closing this popup hands focus back to the pane it was opened from, so close it first
+      // and split after: the split then leaves the new pane focused.
       closeOverlay(props().overlay);
+      run("pane.split", { direction: "right", ...(f?.pane ? { pane: f.pane } : {}), mod: "branch-review", props: { folder, on: space?.machine ?? null, space: f?.space ?? space?.id } });
     });
   }
 
