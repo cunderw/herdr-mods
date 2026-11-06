@@ -178,3 +178,16 @@ test("every view renders with the GitHub view and help open", async () => {
   assert.ok(view.display.some((d) => d.thread?.id === "T"), "thread shows inline in the branch view");
   draw();
 });
+
+test("the GitHub view loads a PR's threads through gh", async () => {
+  const pr = { number: 9, url: "https://github.com/o/r/pull/9", title: "T", state: "OPEN" };
+  const page = { data: { repository: { pullRequest: { reviewThreads: { pageInfo: { hasNextPage: false }, nodes: [
+    { id: "G1", path: "src.js", line: 3, isResolved: false, isOutdated: false, diffSide: "RIGHT", comments: { nodes: [{ id: "c", body: "hm", author: { login: "kim" } }] } }] } } } } };
+  world.gh = (args) => ({ code: 0, stderr: "", stdout: JSON.stringify(args[0] === "pr" ? pr : page) });
+  view.pr = null; view.threads = []; view.gh = "idle";
+  key("p"); await settle();
+  assert.equal(view.gh, "ready", view.ghError);
+  assert.equal(view.threads[0].id, "G1");
+  draw();
+  world.gh = null;
+});

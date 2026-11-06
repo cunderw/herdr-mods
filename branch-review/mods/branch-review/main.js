@@ -117,7 +117,7 @@ export default class BranchReview extends View {
     if (r.code !== 0) throw new Error((r.stderr || r.stdout).trim() || `git ${args[0]} failed`);
     return r.stdout;
   }
-  gh(args) { return exec("gh", args, { cwd: this.root, on: this.on }); }
+  runGh(args) { return exec("gh", args, { cwd: this.root, on: this.on }); }
 
   storeKey() { return `comments:${this.root}:${this.branch}`; }
   loadComments() {
@@ -564,7 +564,7 @@ export default class BranchReview extends View {
     this.gh = "loading";
     cx.spawn(async (cx) => {
       try {
-        const run = (args) => this.gh(args);
+        const run = (args) => this.runGh(args);
         if (!this.pr) this.pr = await findPr(run);
         if (root !== this.root || branch !== this.branch) return;
         if (!this.pr) { this.gh = "none"; this.threads = []; return; }
@@ -649,7 +649,7 @@ export default class BranchReview extends View {
     this.posting = true; this.replyError = null; cx.notify();
     cx.spawn(async (cx) => {
       try {
-        await replyToThread((args) => this.gh(args), this.pr, t.id, body);
+        await replyToThread((args) => this.runGh(args), this.pr, t.id, body);
         notify({ title: "Reply posted", body: `${t.path}${t.line ? `:${t.line}` : ""}`, level: "success", timeout: 4000 });
         this.replying = null; this.replyInput.set_value(""); this.typing = null; this.handle.focus();
         this.gh = "ready"; this.loadThreads(cx);

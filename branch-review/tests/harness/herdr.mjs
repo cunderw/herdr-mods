@@ -11,7 +11,7 @@ export const world = {
   terminals: [], hcResult: { code: 0, stdout: "", stderr: "" },
 };
 export const exec = (cmd, args = [], { cwd } = {}) => new Promise((res, rej) => {
-  if (cmd === "gh") return res({ code: 1, stdout: "", stderr: "no git remotes found" });
+  if (cmd === "gh") return res(world.gh ? world.gh(args) : { code: 1, stdout: "", stderr: "no git remotes found" });
   if (cmd === "open") return res({ code: 0, stdout: "", stderr: "" });
   execFile(cmd, args, { cwd, maxBuffer: 1 << 26 }, (err, stdout, stderr) => {
     if (err && typeof err.code !== "number") return rej(err);
